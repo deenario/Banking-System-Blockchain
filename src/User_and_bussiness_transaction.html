@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {background-color: skyblue;}
+ table {
+  font-family: arial, sans-serif;
+  
+  width: 100%;
+}
+
+td, th {
+  border: 4px solid black;
+  text-align: left;
+  padding: 20px;
+}
+
+tr:nth-child(even) {
+ 
+}
+</style>
+</head>
+<body>
+<h2>TRANSACTION</h2>
+<p align="right">
+<button>Logout</button>
+</p>
+
+<table>
+  <tr>
+    <th>TASK</th>
+    <th>TO</th>
+    <th>AMOUNT</th>
+   
+  </tr>
+  <tr>
+    <th>SEND</th>
+    <td><input type="checkbox" id="Bank"  name="user_Type"><label class="light" for="Bank">Bank</label></td>
+    <td><label for="Amount">Amount:</label>
+          <input type="Amount" id="Amount" name="user_Amount"></td>
+    
+  </tr>
+  
+  
+  <tr>
+  <th>COMMENT</th>
+  <th><label for="comment"></label>
+          <input type="comment" id="comment" name="comment"></th>
+          <th><button>Submit</button>
+  </tr>
+  
+ 
+  </table>
+
+</body>
+</html>
