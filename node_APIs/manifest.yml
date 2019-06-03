@@ -1,0 +1,5 @@
+---
+applications:
+ - name: adverce-ibmcloud-enterprise
+   random-route: true
+   memory: 256M
