@@ -5,8 +5,6 @@ The Election system designed using Hyperledger Fabric.
 
 ## Setup
 
-```./byfn.sh up``` 
-
 ```./byfn.sh up -s couchdb```
 
 ```./byfn.sh down```
