@@ -25,7 +25,7 @@ type User struct {
 	Biography			string `json:"biography"`
 }
 
-type transactions struct {
+type Transactions struct {
 	ObjectType			string `json:"Type"`
 	Transaction_ID 		string `json:"transaction_ID"`
 	To 					string `json:"to"`
@@ -53,12 +53,12 @@ func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	if function == "queryUser" {
 		return t.queryUser(stub,args)
 	}
-	// if function == "addTransaction" {
-	// 	return t.addTransaction(stub,args)
-	// }
-	// if function == "queryBankTransactions" {
-	// 	return t.queryBankTransactions(stub,args)
-	// }
+	if function == "addTransaction" {
+		return t.addTransaction(stub,args)
+	}
+	if function == "queryTransactions" {
+		return t.queryTransactions(stub,args)
+	}
 	// if function == "queryBusinessTransactions" {
 	// 	return t.queryBusinessTransactions(stub,args)
 	// }
@@ -102,12 +102,12 @@ func (t *SmartContract) addUser(stub shim.ChaincodeStubInterface, args []string)
 
 	
 
-	name := args[1]
-	address := args[2]
-	email := args[3]
-	password := args[4]
-	user_type := args[5]
-	biography := args[6]
+	name := args[0]
+	address := args[1]
+	email := args[2]
+	password := args[3]
+	user_type := args[4]
+	biography := args[5]
 
 	// ======Check if User Already exists
 
@@ -143,13 +143,14 @@ func (t *SmartContract) addUser(stub shim.ChaincodeStubInterface, args []string)
 
 func (t *SmartContract) queryUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
- 	if len(args) < 1 {
-		return shim.Error("Incorrect number of arguments. Expecting 1")
+ 	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
 	email := args[0]
+	password := args[1]
 
-	queryString := fmt.Sprintf("{\"selector\":{\"Type\":\"user\",\"email\":\"%s\"}}", email)
+	queryString := fmt.Sprintf("{\"selector\":{\"Type\":\"user\",\"email\":\"%s\",\"password\":\"%s\"}}", email, password)
 
 	queryResults, err := getQueryResultForQueryString(stub, queryString)
 	if err != nil {
@@ -159,7 +160,86 @@ func (t *SmartContract) queryUser(stub shim.ChaincodeStubInterface, args []strin
 	return shim.Success(queryResults)
 }
 
+func (t *SmartContract) addTransaction(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
+	var err error
+
+	if len(args) != 5 {
+		return shim.Error("Incorrect Number of Aruments. Expecting 5")
+	}
+
+	fmt.Println("Adding new Transaction")
+
+	// ==== Input sanitation ====
+	if len(args[0]) <= 0 {
+		return shim.Error("1st Argument Must be a Non-Empty String")
+	}
+	if len(args[1]) <= 0 {
+		return shim.Error("2nd Argument Must be a Non-Empty String")
+	}
+	if len(args[2]) <= 0 {
+		return shim.Error("3rd Argument Must be a Non-Empty String")
+	}
+	if len(args[3]) <= 0 {
+		return shim.Error("4th Argument Must be a Non-Empty String")
+	}
+	if len(args[4]) <= 0 {
+		return shim.Error("5th Argument Must be a Non-Empty String")
+	}
+
+	transaction_ID := args[0]
+	to := args[1]
+	from := args[2]
+	amount := args[3]
+	comment := args[4]
+
+	// ======Check if Transaction Already exists
+
+	transactionsAsBytes, err := stub.GetState(transaction_ID)
+	if err != nil {
+		return shim.Error("Transaction Failed with Error: " + err.Error())
+	} else if transactionsAsBytes != nil {
+		return shim.Error("The Inserted transaction already Exists: " + transaction_ID)
+	}
+
+	// ===== Create transactions Object and Marshal to JSON
+
+	objectType := "transactions"
+	transactions := &Transactions{objectType, transaction_ID, to, from, amount, comment}
+	transactionsJSONasBytes, err := json.Marshal(transactions)
+
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	// ======= Save transactions to State
+
+	err = stub.PutState(transaction_ID, transactionsJSONasBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	// ======= Return Success
+
+	fmt.Println("Successfully Saved transaction")
+	return shim.Success(nil)
+}
+
+func (t *SmartContract) queryTransactions(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+
+	if len(args) < 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	from := args[0]
+	queryString := fmt.Sprintf("{\"selector\":{\"Type\":\"transactions\",\"from\":\"%s\"}}", from)
+
+	queryResults, err := getQueryResultForQueryString(stub, queryString)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(queryResults)
+}
 
 // =========================================================================================
 // getQueryResultForQueryString executes the passed in query string.
