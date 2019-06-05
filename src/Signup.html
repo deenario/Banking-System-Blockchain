@@ -3,61 +3,96 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
   <link rel="stylesheet" href="css/style.css">
+  <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
 </head>
 <body>
- <form action="index.html" method="post">
+ <form action="" method="post">
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sign Up Form</title>
-        <link rel="stylesheet" href="css/normalize.css">
-        <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="css/main.css">
-    </head>
-    <body>
-      
         <h1>Sign Up</h1>
         
         <fieldset>
           <legend><span class="number">1</span>Your basic info</legend>
           <label for="name">Name:</label>
-          <input type="text" id="name" name="user_name">
+          <input type="text" id="name" name="name">
 		  
 		  <label for="Address">Address:</label>
-          <input type="text" id="name" name="address">
+          <input type="text" id="address" name="address">
           
           <label for="mail">Email:</label>
-          <input type="email" id="mail" name="user_email">
+          <input type="email" id="email" name="email">
           
           <label for="password">Password:</label>
-          <input type="password" id="password" name="user_password">
-          
-          
+          <input type="password" id="password" name="password">
+        
         </fieldset>
         
         <fieldset>
           <legend><span class="number">2</span>TYPE</legend>
 		  <label>Type:</label>
-          <input type="checkbox" id="Individual"name="user_Type"><label class="light" for="Individual">Individual</label><br>
-          <input type="checkbox" id="Bussiness"  name="user_Type"><label class="light" for="Bussiness">Bussiness</label><br>
-          <input type="checkbox" id="Bank"  name="user_Type"><label class="light" for="Bank">Bank</label>
+          <input type="radio" id="Individual"name="user_Type" value="individual"><label class="light" for="Individual">Individual</label><br>
+          <input type="radio" id="Bussiness"  name="user_Type" value="business"><label class="light" for="Bussiness">Bussiness</label><br>
+          <input type="radio" id="Bank"  name="user_Type" value="bank"><label class="light" for="Bank">Bank</label>
 		  
 		  <label for="bio">Biography:</label>
-          <textarea id="bio" name="user_bio"></textarea>
-      
-        </fieldset>
-  
-        <button type="submit">Sign Up</button>
+          <input type="text" id="biography" name="biography"></input>
+      </fieldset>
+        <input type="button" class="btn-click" value="Sign up"></input>
       </form>
       
     </body>
-</html>
-  
-  
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
 
-</body>
+    <script>
+      $(document).ready(function () {
+        $(document).on('click', '.btn-click', function () {
 
+                // var userdata = {};
+                // userdata["name"] = $("input[type=text][name=name]").val();
+                // userdata["address"] = $("input[type=text][name=address]").val();
+                // userdata["email"] = $("input[type=email][name=email]").val();
+                // userdata["pass"] = $("input[type=password][name=password]").val();
+                // userdata["user_type"] = $("input[name=user_Type]:checked").val();
+                // userdata["biography"] = $("input[type=text][name=biography]").val();
+
+                addData();
+                // PostData(userdata);
+                // getData();
+                getAjaxData();
+            });
+      });
+
+      function getAjaxData(){
+        $.ajax({
+          type: 'GET',
+          url: 'http://localhost:8000/api/querytransactions?from=bank'
+        })
+      }
+
+      function addData(){
+     $.ajax({
+             type: "POST",
+             url: "http://localhost:8000/api/adduser",
+             data: {
+              "name" : "Danyal",
+              "address" : "ad",
+              "email" : "em",
+              "password" : "pass",
+              "user_type" : "bank",
+              "biography" : "This is it"
+            },
+             success: function (data, status, jqXHR) {
+                 alert(success);
+             },
+             error: function (jqXHR, status) {
+                 // error handler
+                 console.log(jqXHR);
+                 alert('fail' + status.code);
+             }
+          });
+    }
+
+    </script>
 </html>

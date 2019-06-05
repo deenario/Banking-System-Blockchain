@@ -19,7 +19,10 @@ if (process.env.VCAP_APPLICATION) {
   port = process.env.PORT;
 }
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 //Using queue middleware
 app.use(queue({ activeLimit: 30, queuedLimit: -1 }));
@@ -35,6 +38,13 @@ app.listen(port, function () {
 
 app.post('/api/adduser', async function (req, res) {
 
+  console.log(req.body.name);
+  console.log(req.body.address);
+  console.log(req.body.email);
+  console.log(req.body.password);
+  console.log(req.body.user_type);
+  console.log(req.body.biography);
+
   var request = {
     chaincodeId: 'banking',
     fcn: 'addUser',
@@ -48,12 +58,13 @@ app.post('/api/adduser', async function (req, res) {
     ]
   };
 
+
   let response = await invoke.invokeCreate(request);
   if (response) {
     if(response.status == 200)
-    res.status(response.status).send({ message: "The User with email: "+req.body.email+ " is stored in the blockchain with " +response.message  });
+    res.status(response.status).send("The User with email: "+req.body.email+ " is stored in the blockchain with " +response.message);
     else
-    res.status(response.status).send({ message: response.message});
+    res.status(response.status).send(response.message);
   }
 });
 
@@ -74,9 +85,9 @@ app.post('/api/addtransaction', async function (req, res) {
   let response = await invoke.invokeCreate(request);
   if (response) {
     if(response.status == 200)
-    res.status(response.status).send({ message: "The Transaction with ID: "+req.body.transaction_ID+ " is stored in the blockchain with " +response.message  });
+    res.status(response.status).send("The Transaction with ID: "+req.body.transaction_ID+ " is stored in the blockchain with " +response.message);
     else
-    res.status(response.status).send({ message: response.message});
+    res.status(response.status).send(response.message);
   }
 });
 
@@ -97,9 +108,9 @@ app.get('/api/queryuser', async function (req, res) {
   let response = await query.invokeQuery(request)
   if (response) {
     if(response.status == 200)
-    res.status(response.status).send({ message: JSON.parse(response.message) });
+    res.status(response.status).send(JSON.parse(response.message));
     else
-    res.status(response.status).send({ message: response.message });
+    res.status(response.status).send(response.message);
   }
 });
 
@@ -113,8 +124,8 @@ app.get('/api/querytransactions', async function (req, res) {
     let response = await query.invokeQuery(request)
     if (response) {
       if(response.status == 200)
-      res.status(response.status).send({ message: JSON.parse(response.message) });
+      res.status(response.status).send(JSON.parse(response.message));
       else
-      res.status(response.status).send({ message: response.message });
+      res.status(response.status).send(response.message);
     }
 });
