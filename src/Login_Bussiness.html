@@ -18,16 +18,52 @@
 <img src="images/bussiness.png" alt="individual" style="float:;width:130px;height:130px;">
 </center>
 <form class="box login">
-	<fieldset class="boxBody">
-	  <label>Username/e-mail</label>
-	  <input type="text" tabindex="1" placeholder="Username/e-mail" required>
-	  <label><a href="#" class="rLink" tabindex="5">Forget your password?</a>Password</label>
-	  <input type="password" tabindex="2" placeholder="password" required>
-	</fieldset>
-	<footer>
-	  <input type="submit" class="btnLogin" value="Login" tabindex="4">
-	  <button>sign-up</button>
-	</footer>
+		<fieldset class="boxBody">
+				<label>Username/e-mail</label>
+				<input type="email" id="email" name="email" tabindex="1" placeholder="Username/e-mail" required>
+				<label><a href="#" class="rLink" tabindex="5">Forget your password?</a>Password</label>
+				<input type="password" id="password" name="password" tabindex="2" placeholder="password" required>
+			</fieldset>
+			<footer>
+					<input type="button" class="btn-click" value="Login"></input>
+			</footer>
 </form>
 </body>
+
+<script src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script>
+
+	$(document).ready(function () {
+		$(document).on('click', '.btn-click', function () {
+
+			var email = $("input[type=email][name=email]").val();
+      var password  = $("input[type=password][name=password]").val();
+
+		$.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuser?email='+email+'&password='+password+'',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error' || data.responseText == "[]") {
+		      alert("Username & Password is Incorrect");
+		    }
+		    else {
+					if (data.responseJSON[0].Record.user_type == "business")
+					{
+						console.log(data.responseJSON[0].Record.user_type);
+						window.location.href = "welcome_individual.html";
+
+					}
+					else
+					{
+						alert("User type is not Individual");
+					}
+		    }
+		  }  
+		});
+	});
+});  
+
+</script>
+
 </html>

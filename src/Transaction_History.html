@@ -16,7 +16,7 @@ th, td {
 
 <h2>Transaction History</h2>
 
-<table style="width:100%">
+<table id="tbl_transactions" style="width:100%">
   <tr>
     <th>Transaction ID</th>
     <th>To</th> 
@@ -24,46 +24,40 @@ th, td {
     <th>Amount</th>
     <th>Comment</th>
   </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
 </table>
-
-
-
 </body>
+
+
+<script src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script>
+	$(document).ready(function () {
+
+    var from = 'bank';
+    var tbl = '';
+
+		$.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/querytransactions?from='+from+'',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error' || data.responseText == "[]") {
+		      alert("User has no Transactions yet");
+		    }
+		    else {
+          for(var i=0; i < data.responseJSON.length; i++)
+          {
+            tbl += '<tr>';
+            tbl += '<td>'+data.responseJSON[i].Record.transaction_ID+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.to+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.from+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.amount+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.comment+'</td>';  
+            tbl += '</tr>';
+          }
+          $('#tbl_transactions').append(tbl);
+        }
+		  }  
+		});
+	});
+</script>
 </html>
