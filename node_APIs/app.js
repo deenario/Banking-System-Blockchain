@@ -40,13 +40,6 @@ app.listen(port, function () {
 
 app.post('/api/adduser', async function (req, res) {
 
-  console.log(req.body.name);
-  console.log(req.body.address);
-  console.log(req.body.email);
-  console.log(req.body.password);
-  console.log(req.body.user_type);
-  console.log(req.body.biography);
-
   var request = {
     chaincodeId: 'banking',
     fcn: 'addUser',

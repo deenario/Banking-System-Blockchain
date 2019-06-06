@@ -18,10 +18,10 @@ td, th {
 </style>
 </head>
 <body>
-<h2>BANK TRANSACTION</h2>
-<p align="right">
+<h2>BUSINESS TRANSACTION</h2>
 <button>Logout</button>
 </p>
+
 <table>
   <tr>
     <th>TASK</th>
@@ -31,32 +31,32 @@ td, th {
   </tr>
   <tr>
     <th>SEND</th>
-    <td>
-      <input type="radio" id="Individual"name="user_Type" value="individual"><label class="light" for="Individual">Individual</label><br>
-      <input type="radio" id="Bussiness"  name="user_Type" value="business"><label class="light" for="Bussiness">Bussiness</label><br>
+    <td><label class="light" for="Bank">Bank</label></td>
     <td><label for="Amount">Amount:</label>
           <input type="text" id="amount" name="amount"></td>
   </tr>
   <tr>
   <th>COMMENT</th>
   <th><label for="Comment"></label>
-    <input type="text" id="comment" name="comment"></th>
-    <th><input type="button" class="btn-click" value="Submit"></input>
-  </tr>
-  </table>
+          <input type="text" id="comment" name="comment"></th>
+          <th><input type="button" class="btn-click" value="Submit"></input>
+  </tr> 
+</table>
 </body>
 
 <script src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
+
 <script>
   $(document).ready(function () {
     $(document).on('click', '.btn-click', function () {
+
       $.ajax({
          type: "POST",
          url: "http://localhost:8000/api/addtransaction",
          data: {
           "transaction_ID" : "txnID_"+ Math.round((new Date()).getTime() / 1000) +"",
-          "to" : $("input[name=user_Type]:checked").val(),
-          "from" :"bank",
+          "to" : "bank" ,
+          "from" :"business" ,
           "amount" : $("input[type=text][name=amount]").val(),
           "comment" : $("input[type=text][name=comment]").val()
         },
@@ -64,6 +64,7 @@ td, th {
       complete: function (data, status) {
         if (status === 'error' || !data.responseText) {
           alert(data.responseText);
+          
         }
         else {
           alert(data.responseText);
