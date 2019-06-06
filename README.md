@@ -1,7 +1,25 @@
 
 # Blockchain Based Election System
 
-The Election system designed using Hyperledger Fabric.
+The Election system designed using Hyperledger Fabric. 
+
+## Installations
+Ubuntu 16.04 or 18.04.
+the first thing you have to do is install the pre-requists for this project. Do that by running the script
+```./prereqs-ubuntu.sh```
+
+``` sudo apt install git```
+
+## Installing Hyperledger Fabric
+In order to install hyperledger fabric. There are a few steps that needs to be done once.
+To install hyperledger fabric
+
+```git clone https://github.com/hyperledger/fabric-samples.git```
+
+``` cd fabric-samples ```
+``` ./scripts/bootstrap.sh ``` 
+
+Run the following commands.
 
 ## Setup
 
