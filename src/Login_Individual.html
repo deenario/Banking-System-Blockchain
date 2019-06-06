@@ -15,7 +15,7 @@
 <br>
 <br>
 <br>
-<img src="images/download.png" alt="individual" style="float:;width:100px;height:100px;">
+<img src="images/download.png" alt="individual" style="width:100px;height:100px;">
 </center>
 <form class="box login">
 	<fieldset class="boxBody">
@@ -51,7 +51,7 @@
 					if (data.responseJSON[0].Record.user_type == "individual")
 					{
 						console.log(data.responseJSON[0].Record.user_type);
-						window.location.href = "welcome_individual.html";
+						window.location.href = "welcome_individual.html?name="+data.responseJSON[0].Record.name+"&address="+data.responseJSON[0].Record.address+"";
 
 					}
 					else
