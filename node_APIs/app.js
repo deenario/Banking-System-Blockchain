@@ -11,7 +11,6 @@ const path = require('path');
 const app = express();
 const invoke = require('./invokeNetwork');
 const query = require('./queryNetwork');
-var _time = "T00:00:00Z";
 
 //declare port
 var port = process.env.PORT || 8000;
@@ -19,13 +18,16 @@ if (process.env.VCAP_APPLICATION) {
   port = process.env.PORT;
 }
 
-// app.use(bodyParser.json());
+// // app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-//Using queue middleware
-app.use(queue({ activeLimit: 30, queuedLimit: -1 }));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 //run app on port
 app.listen(port, function () {
@@ -113,6 +115,10 @@ app.get('/api/queryuser', async function (req, res) {
     res.status(response.status).send(response.message);
   }
 });
+
+app.get("/api/test", (req, res, next) => {
+  res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+ });
 
 app.get('/api/querytransactions', async function (req, res) {
 

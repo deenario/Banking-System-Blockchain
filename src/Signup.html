@@ -48,45 +48,45 @@
     <script>
       $(document).ready(function () {
         $(document).on('click', '.btn-click', function () {
-          // $.ajax({
-          //    type: "POST",
-          //    url: "http://localhost:8000/api/adduser",
-          //    data: {
-          //     "name" : $("input[type=text][name=name]").val(),
-          //     "address" : $("input[type=text][name=address]").val(),
-          //     "email" : $("input[type=email][name=email]").val(),
-          //     "password" : $("input[type=password][name=password]").val(),
-          //     "user_type" : $("input[name=user_Type]:checked").val(),
-          //     "biography" : $("input[type=text][name=biography]").val()
-          //   },
-          //   success: AjaxSucceeded,
-          //   error: AjaxFailed
-          // });
-          // function AjaxSucceeded(result) {
-          //   alert("AJAX SUCCESS");
-          //   alert(result.d);
-          // }
-          // function AjaxFailed(result) {
-          //   alert("AJAX FAILED");
-          //   alert(result.status + ' ' + result.statusText);
-          //   }
-          // });
-      
-        $.ajax({
-          type: 'GET',
-          url: 'http://localhost:8000/api/querytransactions?from=bank',
-          success: AjaxSucceeded,
-            error: AjaxFailed
-          });
-          function AjaxSucceeded(result) {
-            alert("AJAX SUCCESS");
-            alert(result.d);
-          }
-          function AjaxFailed(result) {
-            alert("AJAX FAILED");
-            alert(result.status + ' ' + result.statusText);
+          $.ajax({
+             type: "POST",
+             url: "http://localhost:8000/api/adduser",
+             data: {
+              "name" : $("input[type=text][name=name]").val(),
+              "address" : $("input[type=text][name=address]").val(),
+              "email" : $("input[type=email][name=email]").val(),
+              "password" : $("input[type=password][name=password]").val(),
+              "user_type" : $("input[name=user_Type]:checked").val(),
+              "biography" : $("input[type=text][name=biography]").val()
+            },
+            cache: false,        
+          complete: function (data, status) {
+            if (status === 'error' || !data.responseText) {
+              alert(data.responseText);
+              
             }
-          });
-    });
+            else {
+              alert(data.responseText);
+              window.location.href = "login.html";
+            }
+          }  
+        });
+      });
+    });  
+        // $.ajax({
+        //   type: 'GET',
+        //   url: 'http://localhost:8000/api/querytransactions?from=bank',
+        //   cache: false,        
+        //   complete: function (xhr, status) {
+        //     if (status === 'error' || !xhr.responseText) {
+        //       console.log(error);
+        //       alert(status);
+        //     }
+        //     else {
+        //       console.log('It Works!');
+        //       console.log(xhr.responseJSON);
+        //     }
+        //   }  
+        //   });
     </script>
 </html>
