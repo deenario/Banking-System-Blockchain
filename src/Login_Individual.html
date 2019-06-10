@@ -51,7 +51,7 @@
 					if (data.responseJSON[0].Record.user_type == "individual")
 					{
 						console.log(data.responseJSON[0].Record.user_type);
-						window.location.href = "welcome_individual.html?name="+data.responseJSON[0].Record.name+"&address="+data.responseJSON[0].Record.address+"";
+						window.location.href = "welcome_individual.html?name="+data.responseJSON[0].Record.name+"&address="+data.responseJSON[0].Record.address+"&account="+data.responseJSON[0].Record.account+"";
 
 					}
 					else

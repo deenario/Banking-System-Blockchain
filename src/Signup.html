@@ -47,7 +47,15 @@
 
     <script>
       $(document).ready(function () {
-        $(document).on('click', '.btn-click', function () {
+         
+        $(document).on('click', '.btn-click', function () { 
+
+        let account ="";
+        if ($("input[name=user_Type]:checked").val() == "bank")
+        { account = "100000000000";}
+        else
+        { account = "1000";}
+
           $.ajax({
              type: "POST",
              url: "http://localhost:8000/api/adduser",
@@ -56,6 +64,7 @@
               "address" : $("input[type=text][name=address]").val(),
               "email" : $("input[type=email][name=email]").val(),
               "password" : $("input[type=password][name=password]").val(),
+              "account" : account,
               "user_type" : $("input[name=user_Type]:checked").val(),
               "biography" : $("input[type=text][name=biography]").val()
             },

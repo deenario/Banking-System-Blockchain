@@ -57,7 +57,7 @@ td, th {
           "transaction_ID" : "txnID_"+ Math.round((new Date()).getTime() / 1000) +"",
           "to" : $("input[name=user_Type]:checked").val(),
           "from" :"bank",
-          "amount" : $("input[type=text][name=amount]").val(),
+          "amount" : "$"+$("input[type=text][name=amount]").val(),
           "comment" : $("input[type=text][name=comment]").val()
         },
         cache: false,        
@@ -72,6 +72,11 @@ td, th {
     });
   });
 });  
+
+function callAPI ()
+{
+  
+}
 </script>
 
 </html>

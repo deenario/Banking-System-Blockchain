@@ -52,11 +52,34 @@ th, td {
 
 		$.ajax({
 		  type: 'GET',
-		  url: 'http://localhost:8000/api/querytransactions?from='+from+'',
+		  url: 'http://localhost:8000/api/querytransactionsfrom?from='+from+'',
 		  cache: false,        
 		  complete: function (data, status) {
 		    if (status === 'error' || data.responseText == "[]") {
-		      alert("User has no Transactions yet");
+		    }
+		    else {
+          for(var i=0; i < data.responseJSON.length; i++)
+          {
+            tbl += '<tr>';
+            tbl += '<td>'+data.responseJSON[i].Record.transaction_ID+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.to+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.from+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.amount+'</td>';
+            tbl += '<td>'+data.responseJSON[i].Record.comment+'</td>';
+            tbl += '</tr>';
+          }
+          $('#tbl_transactions').append(tbl);
+        }
+		  }  
+    });
+    
+    
+		$.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/querytransactionsto?to='+from+'',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error' || data.responseText == "[]") {
 		    }
 		    else {
           for(var i=0; i < data.responseJSON.length; i++)

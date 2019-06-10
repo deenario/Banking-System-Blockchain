@@ -21,6 +21,7 @@ type User struct {
 	Address 			string `json:"address"`
 	Email				string `json:"email"`
 	Password			string `json:"password"`
+	Account				string `json:"account"`
 	User_type			string `json:"user_type"`
 	Biography			string `json:"biography"`
 }
@@ -56,15 +57,15 @@ func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	if function == "addTransaction" {
 		return t.addTransaction(stub,args)
 	}
-	if function == "queryTransactions" {
-		return t.queryTransactions(stub,args)
+	if function == "queryTransactionsFrom" {
+		return t.queryTransactionsFrom(stub,args)
 	}
-	// if function == "queryBusinessTransactions" {
-	// 	return t.queryBusinessTransactions(stub,args)
-	// }
-	// if function == "queryIndividualTransactions" {
-	// 	return t.queryIndividualTransactions(stub,args)
-	// }
+	if function == "queryTransactionsTo" {
+		return t.queryTransactionsTo(stub,args)
+	}
+	if function == "updateAccount" {
+		return t.updateAccount(stub,args)
+	}
 
 	fmt.Println("Invoke did not find specified function " + function)
 	return shim.Error("Invoke did not find specified function " + function)
@@ -74,7 +75,7 @@ func (t *SmartContract) addUser(stub shim.ChaincodeStubInterface, args []string)
 
 	var err error
 
-	if len(args) != 6 {
+	if len(args) != 7 {
 		return shim.Error("Incorrect Number of Aruments. Expecting 6")
 	}
 
@@ -97,7 +98,10 @@ func (t *SmartContract) addUser(stub shim.ChaincodeStubInterface, args []string)
 		return shim.Error("5th Argument Must be a Non-Empty String")
 	}
 	if len(args[5]) <= 0 {
-		return shim.Error("5th Argument Must be a Non-Empty String")
+		return shim.Error("6th Argument Must be a Non-Empty String")
+	}
+	if len(args[6]) <= 0 {
+		return shim.Error("7th Argument Must be a Non-Empty String")
 	}
 
 	
@@ -106,8 +110,9 @@ func (t *SmartContract) addUser(stub shim.ChaincodeStubInterface, args []string)
 	address := args[1]
 	email := args[2]
 	password := args[3]
-	user_type := args[4]
-	biography := args[5]
+	account := args[4]
+	user_type := args[5]
+	biography := args[6]
 
 	// ======Check if User Already exists
 
@@ -121,7 +126,7 @@ func (t *SmartContract) addUser(stub shim.ChaincodeStubInterface, args []string)
 	// ===== Create User Object and Marshal to JSON
 
 	objectType := "user"
-	user := &User{objectType, name, address, email, password, user_type, biography}
+	user := &User{objectType, name, address, email, password, account, user_type, biography}
 	userJSONasBytes, err := json.Marshal(user)
 
 	if err != nil {
@@ -225,7 +230,7 @@ func (t *SmartContract) addTransaction(stub shim.ChaincodeStubInterface, args []
 	return shim.Success(nil)
 }
 
-func (t *SmartContract) queryTransactions(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+func (t *SmartContract) queryTransactionsFrom(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
 	if len(args) < 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
@@ -239,6 +244,59 @@ func (t *SmartContract) queryTransactions(stub shim.ChaincodeStubInterface, args
 		return shim.Error(err.Error())
 	}
 	return shim.Success(queryResults)
+}
+
+func (t *SmartContract) queryTransactionsTo(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+
+	if len(args) < 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	to := args[0]
+	queryString := fmt.Sprintf("{\"selector\":{\"Type\":\"transactions\",\"to\":\"%s\"}}", to)
+
+	queryResults, err := getQueryResultForQueryString(stub, queryString)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(queryResults)
+}
+
+func (t *SmartContract) updateAccount(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	var err error
+
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
+	user_type := args[0]
+	Newaccount := args[1]
+	
+
+	userAsBytes, err := stub.GetState(user_type)
+	if err != nil {
+		return shim.Error("Failed to get user:" + err.Error())
+	} else if userAsBytes == nil {
+		return shim.Error("User does not exist")
+	}
+
+	userToupdate := User{}
+	err = json.Unmarshal(userAsBytes, &userToupdate) //unmarshal it aka JSON.parse()
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	
+	userToupdate.Account = Newaccount;
+	
+
+	userJSONasBytes, _ := json.Marshal(userToupdate)
+	err = stub.PutState(user_type, userJSONasBytes) //rewrite the conversion
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("- User Account Successfully Updated (success)")
+	return shim.Success(nil)
 }
 
 // =========================================================================================

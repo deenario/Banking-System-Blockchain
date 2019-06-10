@@ -40,6 +40,11 @@ td, th {
     <td></td>
   </tr>
   <tr>
+    <td>Account</td>
+    <td id="tbl_account"></td>
+    <td></td>
+  </tr>
+  <tr>
     <td>Transactions</td>
     <td><a href="business_transaction.html"><button>ADD</button></a></td>
   </tr>
@@ -72,9 +77,10 @@ td, th {
 	$(document).ready(function () {
     var name = getQueryVariable("name");
     var address = getQueryVariable("address");
+    var account = getQueryVariable("account");
     $('#tbl_name').append(name);
     $('#tbl_address').append(address);
-
+    $('#tbl_account').append(account);
 	});
 </script>
 

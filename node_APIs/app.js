@@ -40,6 +40,7 @@ app.listen(port, function () {
 
 app.post('/api/adduser', async function (req, res) {
 
+  console.log(req.body);
   var request = {
     chaincodeId: 'banking',
     fcn: 'addUser',
@@ -48,6 +49,7 @@ app.post('/api/adduser', async function (req, res) {
       req.body.address,
       req.body.email,
       req.body.password,
+      req.body.account,
       req.body.user_type,
       req.body.biography
     ]
@@ -113,11 +115,11 @@ app.get("/api/test", (req, res, next) => {
   res.json(["Tony","Lisa","Michael","Ginger","Food"]);
  });
 
-app.get('/api/querytransactions', async function (req, res) {
+app.get('/api/querytransactionsfrom', async function (req, res) {
 
     const request = {
       chaincodeId: 'banking',
-      fcn: 'queryTransactions',
+      fcn: 'queryTransactionsFrom',
       args: [req.query.from]
     };
     let response = await query.invokeQuery(request)
@@ -127,4 +129,39 @@ app.get('/api/querytransactions', async function (req, res) {
       else
       res.status(response.status).send(response.message);
     }
+});
+
+app.get('/api/querytransactionsto', async function (req, res) {
+
+  const request = {
+    chaincodeId: 'banking',
+    fcn: 'queryTransactionsTo',
+    args: [req.query.to]
+  };
+  let response = await query.invokeQuery(request)
+  if (response) {
+    if(response.status == 200)
+    res.status(response.status).send(JSON.parse(response.message));
+    else
+    res.status(response.status).send(response.message);
+  }
+});
+
+app.post('/api/updateAccount', async function (req, res) {
+
+  const request = {
+    chaincodeId: 'banking',
+    fcn: 'updateAccount',
+    args: [
+      req.query.user_type + "@gmail.com",
+      req.query.account
+    ]
+  };
+  let response = await query.invokeQuery(request)
+  if (response) {
+    if(response.status == 200)
+    res.status(response.status).send(JSON.parse(response.message));
+    else
+    res.status(response.status).send(response.message);
+  }
 });
