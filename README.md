@@ -39,6 +39,15 @@ Run these commands to run the install the blockchain and its chaincode. Run them
 
 ```docker exec cli peer chaincode instantiate -o orderer.example.com:7050 --cafile $ORDERER_CA -C mychannel -c '{"Args":[]}' -n banking -v 1.0 -P "OR('Org1MSP.member', 'Org2MSP.member')"```
 
+Run these 3 commands to create three new users for bank, business and individual.
+
+```docker exec cli peer chaincode invoke -o orderer.example.com:7050 --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n banking --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt -c '{"Args":["addUser","Bank","City","bank@gmail.com","bank", "1000000","bank","National Bank"]}'```
+
+```docker exec cli peer chaincode invoke -o orderer.example.com:7050 --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n banking --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt -c '{"Args":["addUser","Individual","City","individual@gmail.com","individual", "1000","individual","Student"]}'```
+
+```docker exec cli peer chaincode invoke -o orderer.example.com:7050 --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n banking --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt -c '{"Args":["addUser","Business","City","business@gmail.com","business", "1000","business","Business"]}'```
+
+
 Do not close this terminal and open a new terminal in the Node_api directory.
 
 run these two commands.
@@ -54,3 +63,14 @@ run these two commands.
 This will start the API server for the webpage. Keep these two terminals running. 
 
 Go to the SRC folder and open Index.html webpage. Sign up And new user account and Enjoy the application.
+
+
+## Empty Blockchain and start from scratch.
+
+To empty blockchain. 
+Go to fabric/first_network in blockchain and run 
+
+```./byfn.sh down```
+
+then go to node_APIs folder and delete hfkey or something similar to it. 
+Once these two steps are done then start from the installing the blockchain step in this document . without git pulling the repo again. 
