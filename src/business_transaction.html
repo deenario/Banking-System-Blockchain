@@ -124,7 +124,19 @@ td, th {
         UpdateBalance("business@gmail.com",newbusinessamount.toString());
         UpdateBalance("bank@gmail.com",newbankamount.toString());
       }
-
+      $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=business@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          window.location.href = "welcome_business.html?name="+data.responseJSON[0].Record.name+"&address="+data.responseJSON[0].Record.address+"&account="+newbusinessamount+"";
+		    }
+		  }  
+    });  
   });
 });  
 

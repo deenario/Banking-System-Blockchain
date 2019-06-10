@@ -126,7 +126,19 @@ td, th {
         UpdateBalance("business@gmail.com",newindividualamount.toString());
         UpdateBalance("bank@gmail.com",newbankamount.toString());
       }
-
+      $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=indiviual@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          window.location.href = "welcome_individual.html?name="+data.responseJSON[0].Record.name+"&address="+data.responseJSON[0].Record.address+"&account="+newindividualamount+"";
+		    }
+		  }  
+    });  
   });
 });  
 
