@@ -1,5 +1,5 @@
 
-# Blockchain Based Election System
+# Blockchain Based Banking System
 
 The Election system designed using Hyperledger Fabric. 
 
