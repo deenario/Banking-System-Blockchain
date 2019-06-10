@@ -123,12 +123,12 @@ td, th {
       {
         newbankamount =  parseInt(bankamount,10) + parseInt($("input[type=text][name=amount]").val(),10);
         newindividualamount = parseInt(individualamount,10) -  parseInt($("input[type=text][name=amount]").val(),10);
-        UpdateBalance("business@gmail.com",newindividualamount.toString());
+        UpdateBalance("individual@gmail.com",newindividualamount.toString());
         UpdateBalance("bank@gmail.com",newbankamount.toString());
       }
       $.ajax({
 		  type: 'GET',
-		  url: 'http://localhost:8000/api/queryuseraccount?email=indiviual@gmail.com',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=individual@gmail.com',
 		  cache: false,        
 		  complete: function (data, status) {
 		    if (status === 'error') {
