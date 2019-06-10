@@ -54,6 +54,9 @@ func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	if function == "queryUser" {
 		return t.queryUser(stub,args)
 	}
+	if function == "queryUserAccount" {
+		return t.queryUserAccount(stub,args)
+	}
 	if function == "addTransaction" {
 		return t.addTransaction(stub,args)
 	}
@@ -163,6 +166,24 @@ func (t *SmartContract) queryUser(stub shim.ChaincodeStubInterface, args []strin
 	}
 
 	return shim.Success(queryResults)
+}
+
+func (t *SmartContract) queryUserAccount(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+
+	if len(args) < 1 {
+	   return shim.Error("Incorrect number of arguments. Expecting 1")
+   }
+
+   email := args[0]
+
+   queryString := fmt.Sprintf("{\"selector\":{\"Type\":\"user\",\"email\":\"%s\"}}", email)
+
+   queryResults, err := getQueryResultForQueryString(stub, queryString)
+   if err != nil {
+	   return shim.Error(err.Error())
+   }
+
+   return shim.Success(queryResults)
 }
 
 func (t *SmartContract) addTransaction(stub shim.ChaincodeStubInterface, args []string) peer.Response {

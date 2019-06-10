@@ -49,15 +49,95 @@ td, th {
 <script src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
 <script>
   $(document).ready(function () {
+    var to = "";
+    var bankamount = "";
+    var individualamount = "";
+    var businessamount = "";
+    var newbankamount = "";
+    var newindividualamount = "";
+    var newbusinessamount = "";
+
     $(document).on('click', '.btn-click', function () {
-      $.ajax({
+
+      to = $("input[name=user_Type]:checked").val();
+      performtransaction(to,"bank");
+      bankamount = GetBalance("bank");
+      if (to == "individual")
+      {
+        individualamount = GetBalance("individual");
+        newbankamount =  parseInt(bankamount,10) - parseInt($("input[type=text][name=amount]").val(),10); 
+        newindividualamount = parseInt(individualamount,10) + parseInt($("input[type=text][name=amount]").val(),10);
+        
+        console.log(newindividualamount);
+        console.log(newbankamount);
+        console.log(bankamount);
+        console.log(individualamount);
+
+        UpdateBalance("individual",newindividualamount.toString());
+        UpdateBalance("bank",newbankamount.toString());
+      }
+      else 
+      {
+        businessamount = GetBalance("business");
+        newbankamount =  parseInt(bankamount,10) - parseInt($("input[type=text][name=amount]").val(),10);
+        newbusinessamount = parseInt(businessamount,10) +  parseInt($("input[type=text][name=amount]").val(),10);
+        UpdateBalance("business",newbusinessamount.toString());
+        UpdateBalance("bank",newbankamount.toString());
+      }
+      
+  });
+});  
+
+function GetBalance(from)
+{
+  var _returndata = "";
+  $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email='+from+'@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          _returndata = data.responseJSON[0].Record.account;
+		    }
+		  }  
+    });
+    
+    return _returndata;
+}
+
+function UpdateBalance (user,account) 
+{
+  $.ajax({
+         type: "POST",
+         url: "http://localhost:8000/api/updateAccount",
+         data: {
+          "user_type" : user,
+          "account" : account
+        },
+        cache: false,        
+      complete: function (data, status) {
+        if (status === 'error' || !data.responseText) {
+          alert(data.responseText);
+        }
+        else {
+          alert(data.responseText);
+        }
+      }  
+    });
+}
+
+function performtransaction(to,from) {
+  $.ajax({
          type: "POST",
          url: "http://localhost:8000/api/addtransaction",
          data: {
           "transaction_ID" : "txnID_"+ Math.round((new Date()).getTime() / 1000) +"",
-          "to" : $("input[name=user_Type]:checked").val(),
-          "from" :"bank",
-          "amount" : "$"+$("input[type=text][name=amount]").val(),
+          "to" : to,
+          "from" : from,
+          "amount" : $("input[type=text][name=amount]").val(),
           "comment" : $("input[type=text][name=comment]").val()
         },
         cache: false,        
@@ -70,12 +150,6 @@ td, th {
         }
       }  
     });
-  });
-});  
-
-function callAPI ()
-{
-  
 }
 </script>
 

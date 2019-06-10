@@ -111,9 +111,25 @@ app.get('/api/queryuser', async function (req, res) {
   }
 });
 
-app.get("/api/test", (req, res, next) => {
-  res.json(["Tony","Lisa","Michael","Ginger","Food"]);
- });
+app.get('/api/queryuseraccount', async function (req, res) {
+
+  console.log(req.body);
+
+  const request = {
+    chaincodeId: 'banking',
+    fcn: 'queryUserAccount',
+    args: [
+      req.query.email
+    ]
+  };
+  let response = await query.invokeQuery(request)
+  if (response) {
+    if(response.status == 200)
+    res.status(response.status).send(JSON.parse(response.message));
+    else
+    res.status(response.status).send(response.message);
+  }
+});
 
 app.get('/api/querytransactionsfrom', async function (req, res) {
 
@@ -149,6 +165,8 @@ app.get('/api/querytransactionsto', async function (req, res) {
 
 app.post('/api/updateAccount', async function (req, res) {
 
+  console.log(req.body);
+
   const request = {
     chaincodeId: 'banking',
     fcn: 'updateAccount',
@@ -160,7 +178,7 @@ app.post('/api/updateAccount', async function (req, res) {
   let response = await query.invokeQuery(request)
   if (response) {
     if(response.status == 200)
-    res.status(response.status).send(JSON.parse(response.message));
+    res.status(response.status).send("User Amount Updated");
     else
     res.status(response.status).send(response.message);
   }
