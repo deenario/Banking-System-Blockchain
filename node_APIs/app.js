@@ -163,7 +163,7 @@ app.get('/api/querytransactionsto', async function (req, res) {
   }
 });
 
-app.post('/api/updateAccount', async function (req, res) {
+app.post('/api/updateaccount', async function (req, res) {
 
   console.log(req.body);
 
@@ -171,15 +171,16 @@ app.post('/api/updateAccount', async function (req, res) {
     chaincodeId: 'banking',
     fcn: 'updateAccount',
     args: [
-      req.query.user_type + "@gmail.com",
-      req.query.account
+      req.body.email,
+      req.body.account
     ]
   };
-  let response = await query.invokeQuery(request)
+  let response = await invoke.invokeCreate(request);
+  console.log(response);
   if (response) {
     if(response.status == 200)
-    res.status(response.status).send("User Amount Updated");
+    res.status(response.status).send({ message: "The user with email: "+req.body.email+ " is updated in the blockchain with " +response.message  });
     else
-    res.status(response.status).send(response.message);
+    res.status(response.status).send({ message: response.message});
   }
 });

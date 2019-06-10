@@ -290,11 +290,11 @@ func (t *SmartContract) updateAccount(stub shim.ChaincodeStubInterface, args []s
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
-	user_type := args[0]
+	email := args[0]
 	Newaccount := args[1]
 	
 
-	userAsBytes, err := stub.GetState(user_type)
+	userAsBytes, err := stub.GetState(email)
 	if err != nil {
 		return shim.Error("Failed to get user:" + err.Error())
 	} else if userAsBytes == nil {
@@ -311,12 +311,12 @@ func (t *SmartContract) updateAccount(stub shim.ChaincodeStubInterface, args []s
 	
 
 	userJSONasBytes, _ := json.Marshal(userToupdate)
-	err = stub.PutState(user_type, userJSONasBytes) //rewrite the conversion
+	err = stub.PutState(email, userJSONasBytes) //rewrite the conversion
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
-	fmt.Println("- User Account Successfully Updated (success)")
+	fmt.Println("User Account Successfully Updated (success)")
 	return shim.Success(nil)
 }
 

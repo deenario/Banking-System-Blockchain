@@ -30,11 +30,13 @@ td, th {
    
   </tr>
   <tr>
-    <th>SEND</th>
-    <td><label class="light" for="Bank">Bank</label></td>
-    <td><label for="Amount">Amount:</label>
-          <input type="text" id="amount" name="amount"></td>
-  </tr>
+      <th>SEND</th>
+      <td>
+        <input type="radio" id="Individual"name="user_Type" value="individual"><label class="light" for="Individual">Individual</label><br>
+        <input type="radio" id="bank"  name="user_Type" value="bank"><label class="light" for="Bank">Bank</label><br>
+      <td><label for="Amount">Amount:</label>
+            <input type="text" id="amount" name="amount"></td>
+    </tr>
   <tr>
   <th>COMMENT</th>
   <th><label for="Comment"></label>
@@ -48,30 +50,127 @@ td, th {
 
 <script>
   $(document).ready(function () {
+
+    var to = "";
+    var bankamount = "";
+    var individualamount = "";
+    var businessamount = "";
+    var newbankamount = "";
+    var newindividualamount = "";
+    var newbusinessamount = "";
+
+    $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=bank@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          bankamount = data.responseJSON[0].Record.account;
+		    }
+		  }  
+    });
+    
+    
+    $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=individual@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          individualamount = data.responseJSON[0].Record.account;
+		    }
+		  }  
+    });
+
+    
+    $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=business@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          businessamount = data.responseJSON[0].Record.account;
+		    }
+		  }  
+    });
+
+
+
     $(document).on('click', '.btn-click', function () {
 
-      $.ajax({
+      to = $("input[name=user_Type]:checked").val();
+      performtransaction("bank","business");
+      if (to == "individual")
+      {
+        performtransaction("individual","bank");
+        newbusinessamount =  parseInt(businessamount,10) - parseInt($("input[type=text][name=amount]").val(),10); 
+        newindividualamount = parseInt(individualamount,10) + parseInt($("input[type=text][name=amount]").val(),10);
+        UpdateBalance("individual@gmail.com",newindividualamount.toString());
+        UpdateBalance("business@gmail.com",newbusinessamount.toString());
+      }
+      else 
+      {
+        newbankamount =  parseInt(bankamount,10) + parseInt($("input[type=text][name=amount]").val(),10);
+        newbusinessamount = parseInt(businessamount,10) -  parseInt($("input[type=text][name=amount]").val(),10);
+        UpdateBalance("business@gmail.com",newbusinessamount.toString());
+        UpdateBalance("bank@gmail.com",newbankamount.toString());
+      }
+
+  });
+});  
+
+function UpdateBalance (user,account) 
+{
+  $.ajax({
          type: "POST",
-         url: "http://localhost:8000/api/addtransaction",
+         url: "http://localhost:8000/api/updateaccount",
          data: {
-          "transaction_ID" : "txnID_"+ Math.round((new Date()).getTime() / 1000) +"",
-          "to" : "bank" ,
-          "from" :"business" ,
-          "amount" : "$"+$("input[type=text][name=amount]").val(),
-          "comment" : $("input[type=text][name=comment]").val()
+          "email" : user,
+          "account" : account
         },
         cache: false,        
       complete: function (data, status) {
         if (status === 'error' || !data.responseText) {
           alert(data.responseText);
-          
         }
         else {
           alert(data.responseText);
         }
       }  
     });
-  });
-});  
+}
+
+
+function performtransaction(to,from) {
+  $.ajax({
+         type: "POST",
+         url: "http://localhost:8000/api/addtransaction",
+         data: {
+          "transaction_ID" : "txnID_"+ Math.round((new Date()).getTime() / 1000) +"",
+          "to" : to,
+          "from" : from,
+          "amount" : $("input[type=text][name=amount]").val(),
+          "comment" : $("input[type=text][name=comment]").val()
+        },
+        cache: false,        
+      complete: function (data, status) {
+        if (status === 'error' || !data.responseText) {
+          alert(data.responseText);
+        }
+        else {
+          alert(data.responseText);
+        }
+      }  
+    });
+}
 </script>
 </html>

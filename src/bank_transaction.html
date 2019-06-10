@@ -57,64 +57,94 @@ td, th {
     var newindividualamount = "";
     var newbusinessamount = "";
 
-    $(document).on('click', '.btn-click', function () {
-
-      to = $("input[name=user_Type]:checked").val();
-      performtransaction(to,"bank");
-      bankamount = GetBalance("bank");
-      if (to == "individual")
-      {
-        individualamount = GetBalance("individual");
-        newbankamount =  parseInt(bankamount,10) - parseInt($("input[type=text][name=amount]").val(),10); 
-        newindividualamount = parseInt(individualamount,10) + parseInt($("input[type=text][name=amount]").val(),10);
-        
-        console.log(newindividualamount);
-        console.log(newbankamount);
-        console.log(bankamount);
-        console.log(individualamount);
-
-        UpdateBalance("individual",newindividualamount.toString());
-        UpdateBalance("bank",newbankamount.toString());
-      }
-      else 
-      {
-        businessamount = GetBalance("business");
-        newbankamount =  parseInt(bankamount,10) - parseInt($("input[type=text][name=amount]").val(),10);
-        newbusinessamount = parseInt(businessamount,10) +  parseInt($("input[type=text][name=amount]").val(),10);
-        UpdateBalance("business",newbusinessamount.toString());
-        UpdateBalance("bank",newbankamount.toString());
-      }
-      
-  });
-});  
-
-function GetBalance(from)
-{
-  var _returndata = "";
-  $.ajax({
+    $.ajax({
 		  type: 'GET',
-		  url: 'http://localhost:8000/api/queryuseraccount?email='+from+'@gmail.com',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=bank@gmail.com',
 		  cache: false,        
 		  complete: function (data, status) {
 		    if (status === 'error') {
           alert(error);
 		    }
 		    else {
-          _returndata = data.responseJSON[0].Record.account;
+          bankamount = data.responseJSON[0].Record.account;
 		    }
 		  }  
     });
     
-    return _returndata;
-}
+    
+    $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=individual@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          individualamount = data.responseJSON[0].Record.account;
+		    }
+		  }  
+    });
+
+    
+    $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=business@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          businessamount = data.responseJSON[0].Record.account;
+		    }
+		  }  
+    });
+
+
+    $(document).on('click', '.btn-click', function () {
+
+      to = $("input[name=user_Type]:checked").val();
+      performtransaction(to,"bank");
+      if (to == "individual")
+      {
+        newbankamount =  parseInt(bankamount,10) - parseInt($("input[type=text][name=amount]").val(),10); 
+        newindividualamount = parseInt(individualamount,10) + parseInt($("input[type=text][name=amount]").val(),10);
+        UpdateBalance("individual@gmail.com",newindividualamount.toString());
+        UpdateBalance("bank@gmail.com",newbankamount.toString());
+      }
+      else 
+      {
+        newbankamount =  parseInt(bankamount,10) - parseInt($("input[type=text][name=amount]").val(),10);
+        newbusinessamount = parseInt(businessamount,10) +  parseInt($("input[type=text][name=amount]").val(),10);
+        UpdateBalance("business@gmail.com",newbusinessamount.toString());
+        UpdateBalance("bank@gmail.com",newbankamount.toString());
+      }
+      
+      $.ajax({
+		  type: 'GET',
+		  url: 'http://localhost:8000/api/queryuseraccount?email=bank@gmail.com',
+		  cache: false,        
+		  complete: function (data, status) {
+		    if (status === 'error') {
+          alert(error);
+		    }
+		    else {
+          window.location.href = "welcome_bank.html?name="+data.responseJSON[0].Record.name+"&address="+data.responseJSON[0].Record.address+"&account="+data.responseJSON[0].Record.account+"";
+		    }
+		  }  
+    });  
+  });
+});  
+
 
 function UpdateBalance (user,account) 
 {
   $.ajax({
          type: "POST",
-         url: "http://localhost:8000/api/updateAccount",
+         url: "http://localhost:8000/api/updateaccount",
          data: {
-          "user_type" : user,
+          "email" : user,
           "account" : account
         },
         cache: false,        
