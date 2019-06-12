@@ -108,10 +108,10 @@ td, th {
     $(document).on('click', '.btn-click', function () {
 
       to = $("input[name=user_Type]:checked").val();
-      performtransaction("bank","business");
+      performtransaction("bank","business","business");
       if (to == "individual")
       {
-        performtransaction("individual","bank");
+        performtransaction("individual","bank","bank");
         newbusinessamount =  parseInt(businessamount,10) - parseInt($("input[type=text][name=amount]").val(),10); 
         newindividualamount = parseInt(individualamount,10) + parseInt($("input[type=text][name=amount]").val(),10);
         UpdateBalance("individual@gmail.com",newindividualamount.toString());
@@ -162,12 +162,12 @@ function UpdateBalance (user,account)
 }
 
 
-function performtransaction(to,from) {
+function performtransaction(to,from,txid) {
   $.ajax({
          type: "POST",
          url: "http://localhost:8000/api/addtransaction",
          data: {
-          "transaction_ID" : "txnID_"+ Math.round((new Date()).getTime() / 1000) +"",
+          "transaction_ID" : "txnID_"+txid+"_"+ Math.round((new Date()).getTime() / 1000) + "" + Math.floor((Math.random() * 10) + 1)+"",
           "to" : to,
           "from" : from,
           "amount" : $("input[type=text][name=amount]").val(),

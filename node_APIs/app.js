@@ -67,6 +67,8 @@ app.post('/api/adduser', async function (req, res) {
 
 app.post('/api/addtransaction', async function (req, res) {
 
+  console.log(req.body);
+  
   var request = {
     chaincodeId: 'banking',
     fcn: 'addTransaction',

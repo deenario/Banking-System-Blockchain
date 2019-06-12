@@ -50,6 +50,8 @@ th, td {
     var from = getQueryVariable("from");
     var tbl = '';
 
+    var check = 0;
+
 		$.ajax({
 		  type: 'GET',
 		  url: 'http://localhost:8000/api/querytransactionsfrom?from='+from+'',
@@ -68,7 +70,6 @@ th, td {
             tbl += '<td>'+data.responseJSON[i].Record.comment+'</td>';
             tbl += '</tr>';
           }
-          $('#tbl_transactions').append(tbl);
         }
 		  }  
     });
@@ -92,8 +93,9 @@ th, td {
             tbl += '<td>'+data.responseJSON[i].Record.comment+'</td>';  
             tbl += '</tr>';
           }
-          $('#tbl_transactions').append(tbl);
         }
+        $('#tbl_transactions').append(tbl);
+
 		  }  
 		});
 	});
